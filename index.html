@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MELYVN JARVIS AI</title>
+<style>
+*{box-sizing:border-box}
+body{
+ margin:0;background:#050b14;color:#dffaff;
+ font-family:Arial,sans-serif;min-height:100vh;
+ display:flex;flex-direction:column;align-items:center;
+}
+header{width:100%;padding:22px;text-align:center;
+ border-bottom:1px solid #12364b;letter-spacing:4px}
+h2{color:#42dcff;font-size:19px}
+#status{font-size:12px;color:#55dfff}
+.core{
+ width:190px;height:190px;border-radius:50%;
+ margin:45px auto 20px;border:2px solid #28cfff;
+ box-shadow:0 0 25px #087fae,inset 0 0 30px #087fae;
+ display:flex;align-items:center;justify-content:center;
+ animation:pulse 3s infinite;
+}
+.core span{font-size:55px;color:#65eaff}
+@keyframes pulse{
+ 50%{box-shadow:0 0 55px #00bfff,inset 0 0 45px #087fae}
+}
+#reply{min-height:45px;text-align:center;padding:10px;color:#8beaff}
+.controls{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+button{
+ background:#092438;border:1px solid #28cfff;color:#aaf5ff;
+ padding:13px 19px;border-radius:25px;font-size:14px;
+}
+button:active{background:#12618a}
+.chat{width:90%;max-width:450px;margin:25px auto}
+#messages{height:220px;overflow-y:auto;border:1px solid #16435b;
+ border-radius:12px;padding:12px;background:#081522}
+input{width:72%;padding:13px;background:#102536;
+ color:white;border:1px solid #26708d;border-radius:20px}
+.chat button{padding:12px}
+footer{padding:20px;color:#527b8c;font-size:11px}
+</style>
+</head>
+<body>
+<header>
+<h2>MELYVN JARVIS AI</h2>
+<div id="status">SYSTEM ONLINE</div>
+</header>
+
+<div class="core"><span>J</span></div>
+<div id="reply">At your service, Sir.</div>
+
+<div class="controls">
+<button onclick="listen()">🎙 SPEAK</button>
+<button onclick="greet()">ACTIVATE</button>
+<button onclick="stopVoice()">SILENCE</button>
+</div>
+
+<div class="chat">
+<div id="messages"></div><br>
+<input id="question" placeholder="Ask me anything...">
+<button onclick="send()">SEND</button>
+</div>
+
+<footer>MELYVN JARVIS • PERSONAL AI ASSISTANT</footer>
+
+<script>
+const reply=document.getElementById("reply");
+const statusText=document.getElementById("status");
+
+function speak(text){
+ reply.textContent=text;
+ if("speechSynthesis" in window){
+  speechSynthesis.cancel();
+  let speech=new SpeechSynthesisUtterance(text);
+  speech.lang="en-GB";
+  speech.rate=0.88;
+  speech.pitch=0.75;
+  speechSynthesis.speak(speech);
+ }
+}
+
+function greet(){
+ speak("Good day, Sir. JARVIS systems are online. At your service.");
+}
+
+function stopVoice(){
+ if("speechSynthesis" in window)speechSynthesis.cancel();
+ reply.textContent="Standing by, Sir.";
+}
+
+function listen(){
+ const Recognition=window.SpeechRecognition||window.webkitSpeechRecognition;
+ if(!Recognition){
+  speak("Voice recognition is not supported in this browser, Sir.");
+  return;
+ }
+ const recognition=new Recognition();
+ recognition.lang="en-GB";
+ recognition.onstart=()=>statusText.textContent="LISTENING...";
+ recognition.onend=()=>statusText.textContent="SYSTEM ONLINE";
+ recognition.onresult=(event)=>{
+  document.getElementById("question").value=
+  event.results[0][0].transcript;
+  send();
+ };
+ recognition.start();
+}
+
+function send(){
+ const input=document.getElementById("question");
+ const q=input.value.trim();
+ if(!q)return;
+ addMessage("Sir: "+q);
+ input.value="";
+ const answer="I have received your request, Sir. My AI brain needs to be connected to answer advanced questions.";
+ addMessage("JARVIS: "+answer);
+ speak(answer);
+}
+
+function addMessage(message){
+ const box=document.getElementById("messages");
+ const p=document.createElement("p");
+ p.textContent=message;
+ box.appendChild(p);
+ box.scrollTop=box.scrollHeight;
+}
+</script>
+</body>
+</html>
