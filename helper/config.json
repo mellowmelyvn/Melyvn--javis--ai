@@ -1,0 +1,26 @@
+{
+  "apps": {
+    "chrome": "chrome",
+    "google chrome": "chrome",
+    "edge": "msedge",
+    "firefox": "firefox",
+    "notepad": "notepad",
+    "calculator": "calc",
+    "paint": "mspaint",
+    "file explorer": "explorer",
+    "explorer": "explorer",
+    "task manager": "taskmgr",
+    "settings": "ms-settings:",
+    "mt5": "C:\\Program Files\\MetaTrader 5\\terminal64.exe",
+    "metatrader": "C:\\Program Files\\MetaTrader 5\\terminal64.exe"
+  },
+  "sites": {
+    "youtube": "https://www.youtube.com",
+    "google": "https://www.google.com",
+    "gmail": "https://mail.google.com",
+    "github": "https://github.com",
+    "tradingview": "https://www.tradingview.com",
+    "forex factory": "https://www.forexfactory.com/calendar",
+    "claude": "https://claude.ai"
+  }
+}

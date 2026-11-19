@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="jarvis-token" content="">
 <title>MELYVN JARVIS AI</title>
 <style>
 *{box-sizing:border-box}
@@ -39,6 +40,8 @@ button:active{background:#12618a}
 input{width:72%;padding:13px;background:#102536;
  color:white;border:1px solid #26708d;border-radius:20px}
 .chat button{padding:12px}
+.chips{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:12px}
+.chips button{padding:7px 13px;font-size:12px;background:#07192a;border-color:#1b5873}
 footer{padding:20px;color:#527b8c;font-size:11px}
 </style>
 </head>
@@ -59,8 +62,15 @@ footer{padding:20px;color:#527b8c;font-size:11px}
 
 <div class="chat">
 <div id="messages"></div><br>
-<input id="question" placeholder="Ask me anything...">
+<input id="question" placeholder="Ask me anything..." onkeydown="if(event.key==='Enter')send()">
 <button onclick="send()">SEND</button>
+<div class="chips">
+<button onclick="quick('system status')">System status</button>
+<button onclick="quick('open chrome')">Open Chrome</button>
+<button onclick="quick('list downloads')">Downloads</button>
+<button onclick="quick('screenshot')">Screenshot</button>
+<button onclick="quick('help')">Help</button>
+</div>
 </div>
 
 <footer>MELYVN JARVIS • PERSONAL AI ASSISTANT</footer>
@@ -68,6 +78,10 @@ footer{padding:20px;color:#527b8c;font-size:11px}
 <script>
 const reply=document.getElementById("reply");
 const statusText=document.getElementById("status");
+const token=(document.querySelector('meta[name="jarvis-token"]')||{}).content||"";
+const linked=token.length>0;
+const idleStatus=linked?"COMPUTER LINK ACTIVE":"DEMO MODE - START THE HELPER TO CONTROL YOUR PC";
+statusText.textContent=idleStatus;
 
 function speak(text){
  reply.textContent=text;
@@ -99,7 +113,8 @@ function listen(){
  const recognition=new Recognition();
  recognition.lang="en-GB";
  recognition.onstart=()=>statusText.textContent="LISTENING...";
- recognition.onend=()=>statusText.textContent="SYSTEM ONLINE";
+ recognition.onend=()=>statusText.textContent=idleStatus;
+ recognition.onerror=()=>statusText.textContent=idleStatus;
  recognition.onresult=(event)=>{
   document.getElementById("question").value=
   event.results[0][0].transcript;
@@ -108,13 +123,33 @@ function listen(){
  recognition.start();
 }
 
-function send(){
+function quick(text){
+ document.getElementById("question").value=text;
+ send();
+}
+
+async function send(){
  const input=document.getElementById("question");
  const q=input.value.trim();
  if(!q)return;
  addMessage("Sir: "+q);
  input.value="";
- const answer="I have received your request, Sir. My AI brain needs to be connected to answer advanced questions.";
+ let answer;
+ if(!linked){
+  answer="I am in demo mode, Sir. Start the Jarvis helper on your computer so I can carry out commands.";
+ }else{
+  try{
+   const res=await fetch("/api/command",{
+    method:"POST",
+    headers:{"Content-Type":"application/json","X-Jarvis-Token":token},
+    body:JSON.stringify({text:q})
+   });
+   const data=await res.json();
+   answer=data.reply||data.error||"I received an unexpected response, Sir.";
+  }catch(e){
+   answer="I cannot reach the computer helper, Sir. Is it still running?";
+  }
+ }
  addMessage("JARVIS: "+answer);
  speak(answer);
 }
