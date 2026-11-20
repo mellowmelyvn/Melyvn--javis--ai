@@ -1,0 +1,12 @@
+{
+  "name": "melyvn-jarvis-api",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Secure AI backend for MELYVN JARVIS",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}
