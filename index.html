@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#07111d">
+<title>MELYVN JARVIS</title>
+<style>
+:root{color-scheme:dark;--bg:#07111d;--panel:#0c1b2a;--line:#18364a;--cyan:#48e3ef;--muted:#8da9ba;--text:#e9f6fb}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 50% 0,#12334a 0,transparent 48%),var(--bg);color:var(--text);font:15px/1.5 Inter,Segoe UI,Arial,sans-serif;min-height:100vh}
+header{height:72px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:0 5vw;background:#07111dcc;position:sticky;top:0;backdrop-filter:blur(14px);z-index:2}
+.brand{font-weight:800;letter-spacing:.18em}.brand span{color:var(--cyan)}.status{font-size:12px;color:var(--muted)}.dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:#e8b85c;margin-right:8px;box-shadow:0 0 12px #e8b85c}
+main{max-width:1180px;margin:auto;padding:42px 22px 60px}.top{text-align:center;margin:22px 0 34px}.eyebrow{color:var(--cyan);letter-spacing:.24em;font-size:11px;font-weight:700}.top h1{font-size:clamp(32px,5vw,54px);letter-spacing:.06em;margin:10px 0 4px}.top p{color:var(--muted);margin:0}
+.grid{display:grid;grid-template-columns:1.15fr .85fr;gap:18px}.card{background:linear-gradient(145deg,#102538eF,#091725f2);border:1px solid var(--line);border-radius:18px;padding:22px;box-shadow:0 18px 55px #0004}.card h2{font-size:14px;letter-spacing:.13em;margin:0 0 18px;color:#c8e8f2}
+.core{min-height:320px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center}.orb{width:158px;height:158px;border-radius:50%;border:1px solid #43d9ed88;display:grid;place-items:center;position:relative;background:radial-gradient(circle,#1b8299 0,#0d3348 45%,#091827 72%);box-shadow:0 0 28px #24d5e955,inset 0 0 30px #24d5e944;margin-bottom:20px}.orb:before,.orb:after{content:"";position:absolute;inset:-13px;border:1px solid #3ad9e955;border-radius:50%;animation:pulse 3s infinite}.orb:after{inset:-26px;animation-delay:1.5s}.orb b{font-size:28px;letter-spacing:.12em;color:white;text-shadow:0 0 16px var(--cyan)}@keyframes pulse{50%{transform:scale(1.07);opacity:.25}}
+.core strong{font-size:18px}.core small{color:var(--muted);margin-top:5px}.actions{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-top:18px}
+button{border:1px solid #2d6177;background:#102d40;color:var(--text);padding:11px 17px;border-radius:10px;font-weight:650;cursor:pointer}button.primary{background:var(--cyan);color:#04131b;border-color:var(--cyan)}button:hover{filter:brightness(1.12)}
+.side{display:grid;gap:18px}.metric{display:flex;justify-content:space-between;padding:12px 0;border-bottom:1px solid #173348;color:var(--muted)}.metric:last-child{border:0}.metric b{color:var(--text);font-weight:600}.badge{font-size:11px;border:1px solid #8d6c35;color:#e9c477;padding:3px 8px;border-radius:20px}
+.chat{margin-top:18px}.messages{height:180px;overflow:auto;background:#06121e;border:1px solid #173348;border-radius:12px;padding:14px;color:var(--muted);font-size:14px}.msg{margin:0 0 12px}.msg b{color:var(--cyan)}.inputrow{display:flex;gap:9px;margin-top:10px}.inputrow input{flex:1;min-width:0;background:#06121e;border:1px solid #21465c;border-radius:10px;padding:12px;color:var(--text);outline:none}.inputrow input:focus{border-color:var(--cyan)}
+footer{text-align:center;color:#668395;font-size:12px;margin-top:28px}
+@media(max-width:760px){.grid{grid-template-columns:1fr}header{padding:0 18px}.card{padding:18px}}
+</style></head>
+<body>
+<header><div class="brand">MELYVN <span>JARVIS</span></div><div class="status"><i class="dot"></i>INTERFACE ONLINE · AI NOT CONNECTED</div></header>
+<main>
+<section class="top"><div class="eyebrow">PERSONAL AI ASSISTANT</div><h1>GOOD EVENING, SIR.</h1><p>Your command centre is ready.</p></section>
+<section class="grid">
+<div class="card core"><div class="orb"><b>J</b></div><strong id="greeting">Standing by, sir.</strong><small id="voiceState">Voice output available · Microphone permission required</small><div class="actions"><button class="primary" id="speak">Test voice</button><button id="listen">Activate microphone</button><button id="stop">Silence</button></div></div>
+<div class="side">
+<div class="card"><h2>SYSTEM STATUS</h2><div class="metric"><span>Interface</span><b>Online</b></div><div class="metric"><span>AI brain</span><span class="badge">Not connected</span></div><div class="metric"><span>Windows control</span><span class="badge">Not connected</span></div><div class="metric"><span>Wake word</span><b>JARVIS · Planned</b></div></div>
+<div class="card"><h2>QUICK COMMANDS</h2><div class="metric"><span>Say hello</span><b>Greeting demo</b></div><div class="metric"><span>What time is it?</span><b>Local time demo</b></div><div class="metric"><span>Help</span><b>Available commands</b></div></div>
+</div></section>
+<section class="card chat"><h2>JARVIS CONSOLE</h2><div class="messages" id="messages" aria-live="polite"><p class="msg"><b>JARVIS:</b> Interface initialized. AI services and PC controls have not yet been connected.</p></div><form class="inputrow" id="chatForm"><input id="command" autocomplete="off" placeholder="Enter a command…" aria-label="Enter a command"><button class="primary">Send</button></form></section>
+<footer> MELYVN JARVIS · PRIVATE ASSISTANT PROJECT · FRONT-END PROTOTYPE </footer>
+</main>
+<script>
+const messages=document.getElementById('messages'),input=document.getElementById('command'),state=document.getElementById('voiceState');
+function add(who,text){const p=document.createElement('p');p.className='msg';const b=document.createElement('b');b.textContent=who+': ';p.append(b,document.createTextNode(text));messages.appendChild(p);messages.scrollTop=messages.scrollHeight}
+function reply(raw){const q=raw.toLowerCase();if(/hello|hi jarvis|hey/.test(q))return 'Hello, sir. I am standing by.';if(q.includes('time'))return 'The current time is '+new Date().toLocaleTimeString()+'.';if(q.includes('date'))return 'Today is '+new Date().toLocaleDateString()+'.';if(q.includes('help'))return 'This prototype can demonstrate greetings, date and time. The AI brain and Windows controls still need to be connected.';return 'I received your command. Connect the secure AI backend to enable intelligent responses.'}
+document.getElementById('chatForm').addEventListener('submit',e=>{e.preventDefault();const q=input.value.trim();if(!q)return;add('YOU',q);add('JARVIS',reply(q));input.value=''});
+function speak(text){if(!('speechSynthesis'in window)){state.textContent='Speech synthesis is not supported in this browser.';return}speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(text);u.lang='en-US';u.pitch=.82;u.rate=.95;speechSynthesis.speak(u)}
+document.getElementById('speak').onclick=()=>speak('Yes, sir. JARVIS interface is standing by.');
+document.getElementById('stop').onclick=()=>{speechSynthesis.cancel();state.textContent='Voice output stopped.'};
+document.getElementById('listen').onclick=()=>{const SR=window.SpeechRecognition||window.webkitSpeechRecognition;if(!SR){state.textContent='Microphone recognition is not supported here. Try Chrome or Edge.';return}const r=new SR();r.lang='en-US';r.onstart=()=>state.textContent='Listening…';r.onerror=()=>state.textContent='Microphone unavailable or permission denied.';r.onend=()=>state.textContent='Voice output available · Microphone permission required';r.onresult=e=>{const q=e.results[0][0].transcript;input.value=q;document.getElementById('chatForm').requestSubmit()};r.start()};
+</script></body></html>
