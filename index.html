@@ -36,29 +36,35 @@ button{cursor:pointer;border:1px solid #28617b;background:#0d2b40;color:#dff9ff;
 </section>
 <aside class="panel side">
 <h2 class="sectionTitle">SYSTEM OVERVIEW</h2>
-<div class="metric"><span>Interface</span><strong>Online</strong></div><div class="metric"><span>Voice output</span><strong id="voiceStatus">Checking…</strong></div><div class="metric"><span>Voice input</span><strong id="micStatus">Checking…</strong></div><div class="metric"><span>AI connection</span><strong>Not connected</strong></div><div class="metric"><span>PC control</span><strong>Desktop app required</strong></div>
+<div class="metric"><span>Interface</span><strong>Online</strong></div><div class="metric"><span>Voice output</span><strong id="voiceStatus">Checking…</strong></div><div class="metric"><span>Voice input</span><strong id="micStatus">Checking…</strong></div><div class="metric"><span>AI connection</span><strong id="aiStatus">Backend URL needed</strong></div><div class="metric"><span>PC control</span><strong>Desktop app required</strong></div>
 <h2 class="sectionTitle" style="margin-top:26px">WHAT'S NEXT</h2>
-<p style="color:var(--muted);font-size:13px;line-height:1.7">This is the first interface build. Next we can add a secure AI backend, then a Windows desktop companion for wake-word detection and PC actions. Your API keys should stay on the backend, not in this page.</p>
+<p style="color:var(--muted);font-size:13px;line-height:1.7">The secure AI backend is now in the repository. Once it is deployed and its URL is configured here, JARVIS can answer using AI. Windows app control and always-on wake word still require a separate desktop companion.</p>
 </aside>
 </div>
-<section class="panel chat"><h2 class="sectionTitle">JARVIS COMMUNICATION</h2><div class="messages" id="messages"><div class="msg jarvis">JARVIS: Systems initialized. Try “hello”, “what time is it?” or “help”.</div></div><div class="chatrow"><input id="question" placeholder="Type a message to JARVIS…" autocomplete="off"><button class="primary" id="sendBtn">Send</button></div></section>
+<section class="panel chat"><h2 class="sectionTitle">JARVIS COMMUNICATION</h2><div class="messages" id="messages"><div class="msg jarvis">JARVIS: Interface initialized. Connect the deployed AI backend to begin full conversations.</div></div><div class="chatrow"><input id="question" placeholder="Type a message to JARVIS…" autocomplete="off"><button class="primary" id="sendBtn">Send</button></div></section>
 <div class="features"><div class="feature"><b>01 / Voice interface</b><span>Speak to JARVIS and hear spoken responses.</span></div><div class="feature"><b>02 / AI brain</b><span>Secure AI service connection is the next development stage.</span></div><div class="feature"><b>03 / Windows control</b><span>Opening local apps and hands-free wake word need a desktop companion.</span></div></div>
 </main><footer>MELYVN JARVIS • PRIVATE PERSONAL ASSISTANT</footer>
 <script>
 const $=id=>document.getElementById(id);
 const Recognition=window.SpeechRecognition||window.webkitSpeechRecognition;
+const API_BASE=(window.JARVIS_API_URL||"").replace(/\/$/,"");
+$("aiStatus").textContent=API_BASE?"Connecting…":"Backend URL needed";
+if(API_BASE){fetch(API_BASE+"/health").then(r=>r.json()).then(d=>{$("aiStatus").textContent=d.aiConfigured?"Connected":"Key missing"}).catch(()=>{$("aiStatus").textContent="Offline"})}
 $("voiceStatus").textContent=("speechSynthesis" in window)?"Available":"Unavailable";
 $("micStatus").textContent=Recognition?"Available":"Browser unsupported";
 function speak(text){$("reply").textContent=text;if("speechSynthesis"in window){speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(text);u.lang="en-GB";u.rate=.92;u.pitch=.78;speechSynthesis.speak(u)}}
 function add(text,who){const d=document.createElement("div");d.className="msg "+who;d.textContent=(who==="user"?"YOU: ":"JARVIS: ")+text;$("messages").appendChild(d);$("messages").scrollTop=$("messages").scrollHeight}
-function respond(q){const s=q.toLowerCase();let a;
-if(/\b(hello|hi|hey)\b/.test(s))a="Hello, Sir. Good to hear from you. What shall we work on?";
-else if(s.includes("time"))a="The current time on this device is "+new Date().toLocaleTimeString()+", Sir.";
-else if(s.includes("date"))a="Today is "+new Date().toLocaleDateString("en-GB",{weekday:"long",year:"numeric",month:"long",day:"numeric"})+", Sir.";
-else if(s.includes("your name")||s.includes("who are you"))a="I am MELYVN JARVIS, your personal assistant interface.";
-else if(s.includes("help"))a="I can respond to basic demo commands such as hello, date and time. My AI brain and Windows controls have not been connected yet.";
-else a="I have received your message, Sir. My full AI brain is not connected yet. That is our next development step.";
-add(a,"jarvis");speak(a)}
+async function respond(q){
+  if(!API_BASE){const a="The AI server has been prepared, Sir, but it has not been deployed or connected to this page yet. We are one setup step away.";add(a,"jarvis");speak(a);return}
+  $("assistantState").textContent="THINKING";
+  try{
+    const r=await fetch(API_BASE+"/api/chat",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({message:q})});
+    const data=await r.json();
+    if(!r.ok)throw new Error(data.error||"AI request failed");
+    add(data.reply,"jarvis");speak(data.reply);
+  }catch(e){const a="I could not reach my AI brain, Sir. "+e.message;add(a,"jarvis");speak(a)}
+  finally{$("assistantState").textContent="STANDING BY"}
+}
 function send(){const q=$("question").value.trim();if(!q)return;$("question").value="";add(q,"user");respond(q)}
 $("sendBtn").addEventListener("click",send);$("question").addEventListener("keydown",e=>{if(e.key==="Enter")send()});
 $("greetBtn").addEventListener("click",()=>speak("Good day, Sir. MELYVN JARVIS systems are standing by."));
